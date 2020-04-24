@@ -6,6 +6,7 @@ import java.util.Date;
 
 public class AppDetails {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd, yyyy");
+    private static final int MILLI_SECS_IN_DAY = 24 * 60 * 60 * 1000;
 
     private final String appName;
     private final long numReviews;
@@ -22,14 +23,16 @@ public class AppDetails {
             e.printStackTrace();
             this.lastUpdated = null;
         }
-        this.daysSinceLastUpdate = Math.toIntExact((new Date().getTime() - this.lastUpdated.getTime()) / (24 * 60 * 60 * 1000));
+        assert this.lastUpdated != null;
+        this.daysSinceLastUpdate = Math.toIntExact((new Date().getTime() - this.lastUpdated.getTime()) / MILLI_SECS_IN_DAY);
         this.score = this.numReviews / (this.daysSinceLastUpdate * 1.0f);
     }
 
     @Override
     public String toString() {
-        return String.join("\t", appName, String.valueOf(numReviews),
-                DATE_FORMAT.format(lastUpdated), String.valueOf(daysSinceLastUpdate),
-                String.valueOf(score)) + System.lineSeparator();
+        return String.join("\t",
+                appName, String.valueOf(numReviews), DATE_FORMAT.format(lastUpdated),
+                String.valueOf(daysSinceLastUpdate), String.valueOf(score)
+        ) + System.lineSeparator();
     }
 }
